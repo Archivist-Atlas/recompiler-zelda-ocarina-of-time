@@ -1,0 +1,19 @@
+{
+  "id": "zelda-ocarina-of-time",
+  "name": "The Legend of Zelda: Ocarina of Time",
+  "recompiler_name": "TOoT:R (The Ocarina of Time: Recomp)",
+  "title_ids": [
+    "0400486024DEC000",
+    "0400486024DEC800"
+  ],
+  "supported_versions": [
+    131072
+  ],
+  "description": "Port PC natif par recompilation statique (AArch64 -> C++ x86-64, SDL3 / Vulkan / FFmpeg).",
+  "windows_entrypoint": "install.ps1",
+  "linux_entrypoint": "install.sh",
+  "default_output_subdir": "TOoT-R",
+  "shortcut_name": "The Legend of Zelda - Ocarina of Time",
+  "icon": "game_icon.ico"
+}
+

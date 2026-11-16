@@ -1,0 +1,179 @@
+{
+  "game_name": "The Legend of Zelda: Ocarina of Time",
+  "version": "v131072",
+  "icon": "game_icon.ico",
+  "rom_env_var": "OOT_RECOMP_NUP",
+  "options": [
+    {
+      "id": "mesh_nocull",
+      "category": "Rendu & Shaders",
+      "label": "Désactiver le culling meshlet (GPU)",
+      "description": "Évite les blocages/timeouts du GPU sur certains pilotes, au prix d'une légère baisse de FPS dans les scènes chargées.",
+      "env_var": "OOT_MESH_NOCULL",
+      "on_value": "1",
+      "off_value": "0",
+      "default": false
+    },
+    {
+      "id": "robust",
+      "category": "Rendu & Shaders",
+      "label": "Accès mémoire GPU sécurisé (Robust Buffer Access)",
+      "description": "Empêche les lectures hors limites dans les shaders (stabilité accrue), mais réduit fortement les FPS sur NVIDIA (~50%).",
+      "env_var": "OOT_ROBUST",
+      "on_value": "1",
+      "off_value": "0",
+      "default": false
+    },
+    {
+      "id": "local_zero",
+      "category": "Rendu & Shaders",
+      "label": "Initialisation à zéro de la mémoire locale shader",
+      "description": "Force la remise à zéro des tableaux locaux dans les shaders. Désactiver peut accélérer la compilation sur certains GPU.",
+      "env_var": "OOT_LOCAL_ZERO",
+      "on_value": "1",
+      "off_value": "0",
+      "default": true
+    },
+    {
+      "id": "local_crs",
+      "category": "Rendu & Shaders",
+      "label": "Gestion CRS locale des shaders",
+      "description": "Active la gestion CRS locale dans le compilateur de shaders. À désactiver uniquement en cas de défaut graphique ou crash shader.",
+      "env_var": "OOT_LOCAL_CRS",
+      "on_value": "1",
+      "off_value": "0",
+      "default": true
+    },
+    {
+      "id": "cpu_astc",
+      "category": "Rendu & Shaders",
+      "label": "Décodage des textures ASTC sur le CPU",
+      "description": "Décode les textures compressées sur le processeur plutôt que sur la carte graphique. Chargement plus lent mais évite les erreurs compute GPU.",
+      "env_var": "OOT_CPU_ASTC",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "host_pools",
+      "category": "Mémoire GPU",
+      "label": "Garder les pools mémoire en RAM (sans copie VRAM)",
+      "description": "Évite de dupliquer les pools mémoire dans la VRAM du GPU. Réduit l'usage VRAM mais ralentit les accès GPU.",
+      "env_var": "OOT_HOST_POOLS",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "lazy_pool_import",
+      "category": "Mémoire GPU",
+      "label": "Import paresseux des pools mémoire",
+      "description": "N'importe les zones mémoire dans Vulkan qu'au premier accès. Accélère le démarrage, peut causer de légers micro-lags au début.",
+      "env_var": "OOT_LAZY_POOL_IMPORT",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "no_placed_maps",
+      "category": "Mémoire GPU",
+      "label": "Désactiver le mapping mémoire placé (Placed Maps)",
+      "description": "Désactive l'extension Vulkan de mapping mémoire placé. Utile si le pilote gère mal l'allocation virtuelle.",
+      "env_var": "OOT_NO_PLACED_MAPS",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "no_mirror_physical",
+      "category": "Mémoire GPU",
+      "label": "Désactiver le mirroring de la mémoire physique",
+      "description": "Laisse la mémoire physique en RAM hôte au lieu de la copier en VRAM. Moins de VRAM utilisée, accès GPU plus lents.",
+      "env_var": "OOT_NO_MIRROR_PHYSICAL",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "no_mirror_shader_pools",
+      "category": "Mémoire GPU",
+      "label": "Désactiver le mirroring des pools de shaders",
+      "description": "Laisse les pools de shaders en RAM hôte sans copie VRAM. Économise de la VRAM au prix d'une légère latence.",
+      "env_var": "OOT_NO_MIRROR_SHADER_POOLS",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "no_address_replay",
+      "category": "Synchronisation & Pipeline",
+      "label": "Désactiver Buffer Device Address Replay",
+      "description": "Désactive la capture/relecture d'adresses GPU fixes. À tester en cas d'erreur d'initialisation Vulkan.",
+      "env_var": "OOT_NO_ADDRESS_REPLAY",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "no_push_descriptors",
+      "category": "Synchronisation & Pipeline",
+      "label": "Désactiver les Push Descriptors Vulkan",
+      "description": "Utilise des descriptor sets classiques à la place des push descriptors. Légèrement plus coûteux pour le CPU.",
+      "env_var": "OOT_NO_PUSH_DESCRIPTORS",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "serial_queues",
+      "category": "Synchronisation & Pipeline",
+      "label": "Forcer une file GPU unique (Serial Queues)",
+      "description": "Exécute rendu et copies sur la même file Vulkan. Élimine certains bugs de synchronisation multi-files, transferts un peu plus lents.",
+      "env_var": "OOT_SERIAL_QUEUES",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "sync_executor",
+      "category": "Synchronisation & Pipeline",
+      "label": "Exécuteur GPU synchrone",
+      "description": "Attend la fin de chaque lot de commandes GPU avant de continuer. Réduit fortement les FPS, utile pour diagnostiquer un crash.",
+      "env_var": "OOT_SYNC_EXECUTOR",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "no_prewarm",
+      "category": "Synchronisation & Pipeline",
+      "label": "Ignorer le préchauffage des pipelines",
+      "description": "Ne pré-compile pas les pipelines graphiques au lancement. Démarrage plus rapide, mais saccades possibles lors des premières scènes.",
+      "env_var": "OOT_NO_PREWARM",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "old_pipeline",
+      "category": "Synchronisation & Pipeline",
+      "label": "Utiliser l'ancien système de pipeline graphique",
+      "description": "Bascule sur le chemin de rendu historique au lieu du pipeline optimisé.",
+      "env_var": "OOT_OLD_PIPELINE",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    },
+    {
+      "id": "no_fast_draw",
+      "category": "Synchronisation & Pipeline",
+      "label": "Désactiver le chemin de dessin rapide (Fast Draw)",
+      "description": "Désactive l'optimisation des appels de dessin. Plus conservateur, mais réduit les performances CPU.",
+      "env_var": "OOT_NO_FAST_DRAW",
+      "on_value": "1",
+      "off_value": null,
+      "default": false
+    }
+  ]
+}
+
