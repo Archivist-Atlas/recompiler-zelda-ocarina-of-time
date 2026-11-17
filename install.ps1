@@ -1,4 +1,4 @@
-﻿# TOoT:R installer for Windows (driven by Switch2Recomp):
+# TOoT:R installer for Windows (driven by Switch2Recomp):
 #   powershell -ExecutionPolicy Bypass -File install.ps1 [-Nup C:\path\game.nup] [-Dir C:\Games\TOoT-R]
 param(
     [string]$Nup = "",
