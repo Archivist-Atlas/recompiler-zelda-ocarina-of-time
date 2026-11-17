@@ -1,4 +1,4 @@
-# TOoT:R installer for Windows (driven by Switch2Recomp):
+﻿# TOoT:R installer for Windows (driven by Switch2Recomp):
 #   powershell -ExecutionPolicy Bypass -File install.ps1 [-Nup C:\path\game.nup] [-Dir C:\Games\TOoT-R]
 param(
     [string]$Nup = "",
@@ -15,39 +15,24 @@ function Say($msg) { Write-Host "[TOoT:R] $msg" -ForegroundColor Cyan }
 
 if (-not [Environment]::Is64BitOperatingSystem) { Say "a 64-bit Windows is required"; exit 1 }
 
-# ---- MSYS2 ---------------------------------------------------------------------------------------
+# ---- MSYS2 (via global NUP Studio installer) -----------------------------------------------------
+$source = $PSScriptRoot
+$globalMsysInstaller = Join-Path $source "..\..\install_msys2.ps1"
 $bash = Join-Path $Msys "usr\bin\bash.exe"
-if (-not (Test-Path $bash)) {
-    Say "installing MSYS2 (build environment) into $Msys"
-    $installed = $false
-    if (Get-Command winget -ErrorAction SilentlyContinue) {
-        winget install --id MSYS2.MSYS2 -e --silent --accept-package-agreements --accept-source-agreements --location $Msys
-        $installed = Test-Path $bash
+$clang64 = Join-Path $Msys "clang64\bin"
+if (-not (Test-Path -LiteralPath $bash) -or -not (Test-Path -LiteralPath (Join-Path $clang64 "clang++.exe")) -or -not (Test-Path -LiteralPath (Join-Path $Msys "clang64\include\SDL3\SDL.h"))) {
+    if (-not (Test-Path -LiteralPath $globalMsysInstaller)) {
+        Say "error: MSYS2 missing and global installer not found: $globalMsysInstaller"
+        exit 1
     }
-    if (-not $installed) {
-        $setup = Join-Path $env:TEMP "msys2-installer.exe"
-        Invoke-WebRequest "https://repo.msys2.org/distrib/msys2-x86_64-latest.exe" -OutFile $setup
-        & $setup in --confirm-command --accept-messages --root ($Msys -replace '\\', '/') | Out-Null
-        Remove-Item $setup -ErrorAction SilentlyContinue
+    & $globalMsysInstaller -Msys $Msys
+    if ($LASTEXITCODE -ne 0) {
+        Say "MSYS2 installation cancelled or failed; stopping recompilation."
+        exit 1
     }
-    if (-not (Test-Path $bash)) { Say "MSYS2 could not be installed; install it from https://www.msys2.org and run this again"; exit 1 }
 }
-
-function Msys($cmd) {
-    $env:MSYSTEM = "CLANG64"
-    $env:CHERE_INVOKING = "1"
-    & $bash -lc $cmd
-    if ($LASTEXITCODE -ne 0) { throw "MSYS2 command failed: $cmd" }
-}
-Say "updating MSYS2 and installing the build tools (this takes a while the first time)"
-& $bash -lc "pacman -Syu --noconfirm" | Out-Host   # (may update the core and stop; run twice)
-& $bash -lc "pacman -Syu --noconfirm" | Out-Host
-$packages = "clang lld cmake ninja python pkgconf sdl3 opus ffmpeg vulkan-loader vulkan-headers fmt zstd lz4" -split " " |
-    ForEach-Object { "mingw-w64-clang-x86_64-$_" }
-Msys ("pacman -S --needed --noconfirm " + ($packages -join " "))
 
 # ---- source ---------------------------------------------------------------------------------------
-$source = $PSScriptRoot
 if (-not (Test-Path (Join-Path $source "tools\build_game.py"))) {
     Say "error: tools\build_game.py not found in $source"
     exit 1
