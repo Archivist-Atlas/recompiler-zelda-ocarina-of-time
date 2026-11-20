@@ -1,4 +1,4 @@
-# TOoT:R installer for Windows (driven by Switch2Recomp):
+﻿# TOoT:R installer for Windows (driven by Switch2Recomp):
 #   powershell -ExecutionPolicy Bypass -File install.ps1 [-Nup C:\path\game.nup] [-Dir C:\Games\TOoT-R]
 param(
     [string]$Nup = "",
@@ -47,7 +47,25 @@ if (-not $Nup) {
     if ($dialog.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { Say "no game file selected"; exit 1 }
     $Nup = $dialog.FileName
 }
-if (-not (Test-Path -LiteralPath $Nup)) { Say "no such file: $Nup"; exit 1 }
+if (-not (Test-Path -LiteralPath $Nup)) { Say "no such file or directory: $Nup"; exit 1 }
+$Nup = [System.IO.Path]::GetFullPath($Nup)
+if (Test-Path -LiteralPath $Nup -PathType Container) {
+    $packDstDir = Join-Path $Dir "data"
+    New-Item -ItemType Directory -Force -Path $packDstDir | Out-Null
+    $packedNup = Join-Path $packDstDir "game.nup"
+    if (-not (Test-Path -LiteralPath $packedNup)) {
+        Say "packing folder (exefs/romfs) into $packedNup for TOoT:R..."
+        $packagersDir = Resolve-Path (Join-Path $PSScriptRoot "..\..\packagers")
+        $env:PYTHONPATH = $packagersDir.Path
+        try {
+            & $python -m nup.cli pack $Nup $packedNup
+            if ($LASTEXITCODE -ne 0) { Say "nup pack failed"; exit 1 }
+        } finally {
+            Remove-Item Env:\PYTHONPATH -ErrorAction SilentlyContinue
+        }
+    }
+    $Nup = $packedNup
+}
 if (-not $Dir) {
     $default = Join-Path $env:LOCALAPPDATA "tootr"
     Add-Type -AssemblyName System.Windows.Forms
